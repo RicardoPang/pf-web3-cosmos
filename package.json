@@ -1,0 +1,40 @@
+{
+  "name": "pf-web3-cosmos",
+  "version": "1.0.0",
+  "description": "基于 Cosmos SDK 构建的简易区块链，实现挖矿、转账和最长链验证等基础功能",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "start-node": "node src/cli/start-node.js",
+    "create-account": "node src/cli/create-account.js",
+    "send-tx": "node src/cli/send-transaction.js",
+    "start-mining": "node src/cli/start-mining.js",
+    "query-blockchain": "node src/cli/query-blockchain.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "keywords": ["blockchain", "cosmos", "cryptocurrency", "web3", "mining"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cosmjs/amino": "^0.31.1",
+    "@cosmjs/crypto": "^0.31.1",
+    "@cosmjs/encoding": "^0.31.1",
+    "@cosmjs/proto-signing": "^0.31.1",
+    "@cosmjs/stargate": "^0.31.1",
+    "@cosmjs/tendermint-rpc": "^0.31.1",
+    "axios": "^1.4.0",
+    "crypto-js": "^4.1.1",
+    "express": "^4.18.2",
+    "level": "^8.0.0",
+    "libp2p": "^0.45.0",
+    "libp2p-mplex": "^0.10.7",
+    "libp2p-tcp": "^0.17.2",
+    "merkletreejs": "^0.3.10",
+    "secp256k1": "^5.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
