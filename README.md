@@ -415,94 +415,50 @@ npm run query-blockchain
 
 6. **验证最长链机制**
 
-   要测试最长链机制，我们需要分别启动两个节点，然后停止其中一个，让另一个继续挖矿并创建更长的链。以下是一种简化的测试方法：
-   
-   **准备工作：**
-   
-   首先，确保你有两个配置文件和数据目录：
-   
-   1. 第一个节点：`config.json` 和 `./data` 目录
-   2. 第二个节点：`config2.json` 和 `./data2` 目录
-   
-   确保这两个配置文件中的端口设置不同，例如：
-   - 第一个节点：`httpPort: 3000, p2pPort: 5000`
-   - 第二个节点：`httpPort: 3001, p2pPort: 5001`
-   
-   确保每个节点的数据目录中都有矿工钱包：
-   
-   ```bash
-   # 创建第二个节点的数据目录
-   mkdir -p ./data2/blockchain ./data2/wallets
-   
-   # 为第二个节点创建矿工钱包
-   echo -e "y\nminer2" | npm run create-account
-   
-   # 将钱包复制到第二个节点的数据目录
-   cp ./data/wallets/miner2.json ./data2/wallets/miner.json
-   ```
+   下面是一种简单直接的方法来验证最长链机制：
    
    **测试步骤：**
    
-   1. **先停止所有节点（如果有的话）**
-   
-   ```bash
-   pkill -f "node src/cli/start-node.js"
-   ```
-   
-   2. **在第一个终端启动第一个节点**
+   1. **启动第一个节点（端口3000）**
    
    ```bash
    # 启动第一个节点
    echo "n" | npm run start-node
    ```
    
-   3. **在第二个终端启动第二个节点**
+   2. **在另一个终端启动第二个节点（端口3002）**
    
    ```bash
    # 启动第二个节点
-   NODE_CONFIG_FILE=config2.json DATA_DIR=./data2 echo "n" | npm run start-node
+   NODE_CONFIG_FILE=config2.json echo "n" | npm run start-node
    ```
    
-   4. **等待两个节点都挖出一些区块**
+   3. **停止第一个节点**
    
-   使用以下命令检查两个节点的区块链状态：
+   在第一个终端按 Ctrl+C 停止第一个节点
    
-   ```bash
-   # 查看第一个节点的区块链
-   curl http://localhost:3000/blockchain | grep -o '"index":[0-9]*' | tail -n 1
+   4. **等待第二个节点挖出更多区块**
    
-   # 查看第二个节点的区块链
-   curl http://localhost:3001/blockchain | grep -o '"index":[0-9]*' | tail -n 1
-   ```
+   等待约30秒，让第二个节点继续挖矿
    
-   5. **在第一个终端中停止第一个节点**
-   
-   在第一个终端中按 `Ctrl+C` 停止第一个节点。
-   
-   6. **等待第二个节点挖出更多区块**
-   
-   等待约 30 秒，让第二个节点有足够的时间挖出更多区块。
-   
-   7. **重新启动第一个节点**
+   5. **重启第一个节点**
    
    ```bash
-   # 重新启动第一个节点
+   # 重启第一个节点
    echo "n" | npm run start-node
    ```
    
-   8. **验证最长链机制**
-   
-   等待几秒钟让第一个节点同步数据，然后比较两个节点的区块链：
+   6. **验证两个节点的区块链是否一致**
    
    ```bash
-   # 查看第一个节点的区块链哈希
+   # 检查第一个节点的区块链
    curl http://localhost:3000/blockchain | grep -o '"hash":"[^"]*"' | head -n 5
    
-   # 查看第二个节点的区块链哈希
-   curl http://localhost:3001/blockchain | grep -o '"hash":"[^"]*"' | head -n 5
+   # 检查第二个节点的区块链
+   curl http://localhost:3002/blockchain | grep -o '"hash":"[^"]*"' | head -n 5
    ```
    
-   比较两个节点的区块哈希，您将看到它们已经一致，这说明最长链验证机制已经生效。第一个节点在重新启动后会采用第二个节点的链，因为它更长。
+   如果两个节点的区块链哈希一致，说明第一个节点已经采用了第二个节点的更长链，最长链验证机制生效了。
 
 ### 5. 实用提示
 

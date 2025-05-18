@@ -1,0 +1,7 @@
+{
+  "httpPort": 3000,
+  "p2pPort": 6001,
+  "peers": [],
+  "minerAddress": "cosmosfd4c58124422ace13f5d7f5710aea4c8357924fd",
+  "dataDir": "/Users/pangjianfeng/code/pf-web3-cosmos/data"
+}
