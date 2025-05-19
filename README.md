@@ -230,13 +230,14 @@ npm run query-blockchain
 
 1. 确保已安装 Node.js (v14+)
 2. 克隆项目并安装依赖：
+
    ```bash
    git clone https://github.com/yourusername/pf-web3-cosmos.git
    cd pf-web3-cosmos
    npm install
    ```
 
-3. 启动本地测试网络（在终端1中运行）：
+3. 启动本地测试网络（在终端 1 中运行）：
    ```bash
    npm run start-node
    ```
@@ -245,16 +246,19 @@ npm run query-blockchain
 ### 2. 挖矿演示
 
 1. **创建矿工钱包**
-   
-   在新的终端窗口（终端2）中运行：
+
+   在新的终端窗口（终端 2）中运行：
+
    ```bash
    echo -e "y\nminer" | npm run create-account
    ```
+
    系统会在 `data/wallets` 目录下创建一个钱包文件 `miner.json`。
 
 2. **更新配置文件**
 
    将创建的矿工地址添加到配置文件中：
+
    ```bash
    # 打开配置文件
    cat ./data/wallets/miner.json
@@ -264,6 +268,7 @@ npm run query-blockchain
 3. **重启节点**
 
    停止当前节点并重新启动：
+
    ```bash
    # 停止当前节点（如果有运行）
    pkill -f "node src/cli/start-node.js"
@@ -273,6 +278,7 @@ npm run query-blockchain
 
 4. **观察挖矿过程**
    在节点运行日志中，您将看到类似以下输出：
+
    ```
    开始挖掘区块 #1...
    区块 #1 挖掘成功! 哈希: 0,36,156,135,77,120,198,216,128,59,227,72,204,249,216,223,120,37,80,161,228,114,227,233,133,14,62,140,75,163,116,199
@@ -281,37 +287,43 @@ npm run query-blockchain
    ```
 
 5. **查询矿工余额**
-   
-   等待挖出几个区块后，在新的终端窗口（终端3）中运行：
+
+   等待挖出几个区块后，在新的终端窗口（终端 3）中运行：
+
    ```bash
    # 替换为您的矿工地址
    curl http://localhost:3001/balance/cosmos83b4c76c07e632b1fdd401c5b2c724c8e5672048
    ```
-   
-   您将看到矿工地址的余额，每挖出一个区块将获得50个代币的奖励。
+
+   您将看到矿工地址的余额，每挖出一个区块将获得 50 个代币的奖励。
 
 ### 3. 转账演示
 
 1. **创建接收方钱包**
-   
-   在终端3中运行：
+
+   在终端 3 中运行：
+
    ```bash
    echo -e "y\nreceiver" | npm run create-account
    ```
+
    系统会在 `data/wallets` 目录下创建一个钱包文件 `receiver.json`。
 
 2. **查看钱包信息**
-   
+
    查看矿工和接收方的钱包信息：
+
    ```bash
    cat ./data/wallets/miner.json
    cat ./data/wallets/receiver.json
    ```
+
    记录两个地址和矿工的私钥，用于后续的转账操作。
 
 3. **发送交易**
-   
+
    从矿工向接收方发送交易（替换为您的实际地址和私钥）：
+
    ```bash
    echo "y" | npm run send-tx \
      cosmos83b4c76c07e632b1fdd401c5b2c724c8e5672048 \
@@ -320,28 +332,31 @@ npm run query-blockchain
      df34c02150b6c5a9c4e67979cd5965fe8ed8003ee94473b4769a49db6e8ec17f \
      http://localhost:3001
    ```
-   
+
    > 注意：上面的命令包含以下参数：
+   >
    > - 发送方地址
    > - 接收方地址
-   > - 转账金额（50个代币）
+   > - 转账金额（50 个代币）
    > - 发送方私钥（用于签名交易）
-   > - 节点URL（指定节点的HTTP端口）
+   > - 节点 URL（指定节点的 HTTP 端口）
 
 4. **确认交易**
-   
+
    交易提交后，等待几秒钟（等待矿工将交易打包到区块中），然后查询接收方余额：
+
    ```bash
    curl http://localhost:3001/balance/cosmos451c575691dca55e79086df43b655f3af6836aa0
    ```
-   
-   您应该能看到接收方已经收到了50个代币。
+
+   您应该能看到接收方已经收到了 50 个代币。
 
 ### 4. 验证最长链
 
 1. **创建第二个节点的配置文件**
-   
-   在新的终端窗口（终端4）中创建第二个节点的配置文件：
+
+   在新的终端窗口（终端 4）中创建第二个节点的配置文件：
+
    ```bash
    cat > config2.json << EOF
    {
@@ -356,14 +371,15 @@ npm run query-blockchain
    ```
 
 2. **创建第二个节点的数据目录**
-   
+
    ```bash
    mkdir -p ./data2/blockchain ./data2/wallets
    ```
 
 3. **启动第二个节点**
-   
+
    修改 start-node.js 脚本，使其能够从环境变量中读取配置文件路径：
+
    ```bash
    # 修改 start-node.js 脚本，将以下行：
    # const configPath = path.join(process.cwd(), 'config.json');
@@ -371,132 +387,142 @@ npm run query-blockchain
    # const configFileName = process.env.NODE_CONFIG_FILE || 'config.json';
    # const configPath = path.join(process.cwd(), configFileName);
    ```
-   
+
    启动第二个节点：
+
    ```bash
    echo "n" | NODE_CONFIG_FILE=config2.json npm run start-node
    ```
+
    这将启动第二个区块链节点，使用不同的端口避免冲突。您应该能看到类似以下输出：
+
    ```
    节点已成功启动!
    HTTP API 地址: http://localhost:3002
    P2P 监听地址: /ip4/0.0.0.0/tcp/5002
-   
+
    自动挖矿已启动，矿工地址: cosmos83b4c76c07e632b1fdd401c5b2c724c8e5672048
    ```
 
 4. **观察两个节点的区块链状态**
-   
+
    查看第一个节点的区块链：
+
    ```bash
    curl http://localhost:3001/blockchain
    ```
-   
+
    查看第二个节点的区块链：
+
    ```bash
    curl http://localhost:3002/blockchain
    ```
-   
+
    您将看到两个节点有不同的区块链状态（分叉）。第一个节点的区块链已经有多个区块，而第二个节点刚刚开始挖矿，只有几个区块。
 
 5. **等待最长链验证生效**
-   
+
    继续让两个节点运行一段时间（约 1-2 分钟），然后再次查询两个节点的区块链状态：
-   
+
    ```bash
    # 查看第一个节点的区块链
    curl http://localhost:3001/blockchain | grep '"index"' | wc -l
-   
+
    # 查看第二个节点的区块链
    curl http://localhost:3002/blockchain | grep '"index"' | wc -l
    ```
-   
+
    上面的命令将显示每个节点的区块数量。随着时间的推移，您将观察到两个节点的区块链长度会不断变化。
 
 6. **验证最长链机制**
 
    下面是一种简单直接的方法来验证最长链机制：
-   
+
    **测试步骤：**
-   
-   1. **启动第一个节点（端口3000）**
-   
+
+   1. **启动第一个节点（端口 3000）**
+
    ```bash
    # 启动第一个节点
    echo "n" | npm run start-node
    ```
-   
-   2. **在另一个终端启动第二个节点（端口3002）**
-   
+
+   2. **在另一个终端启动第二个节点（端口 3002）**
+
    ```bash
    # 启动第二个节点
    NODE_CONFIG_FILE=config2.json echo "n" | npm run start-node
    ```
-   
+
    3. **停止第一个节点**
-   
+
    在第一个终端按 Ctrl+C 停止第一个节点
-   
+
    4. **等待第二个节点挖出更多区块**
-   
-   等待约30秒，让第二个节点继续挖矿
-   
+
+   等待约 30 秒，让第二个节点继续挖矿
+
    5. **重启第一个节点**
-   
+
    ```bash
    # 重启第一个节点
    echo "n" | npm run start-node
    ```
-   
+
    6. **验证两个节点的区块链是否一致**
-   
+
    ```bash
    # 检查第一个节点的区块链
    curl http://localhost:3000/blockchain | grep -o '"hash":"[^"]*"' | head -n 5
-   
+
    # 检查第二个节点的区块链
    curl http://localhost:3002/blockchain | grep -o '"hash":"[^"]*"' | head -n 5
    ```
-   
+
    如果两个节点的区块链哈希一致，说明第一个节点已经采用了第二个节点的更长链，最长链验证机制生效了。
 
 ### 5. 实用提示
 
 1. **停止节点和挖矿**
-   
+
    停止所有节点：
+
    ```bash
    pkill -f "node src/cli/start-node.js"
    ```
 
 2. **重置区块链**
-   
+
    如果需要重新开始测试，可以删除数据目录：
+
    ```bash
    # 删除第一个节点的区块链数据
    rm -rf ./data/blockchain
    mkdir -p ./data/blockchain
-   
+
    # 删除第二个节点的区块链数据（如果有）
    rm -rf ./data2/blockchain
    mkdir -p ./data2/blockchain
    ```
-   
+
    > 注意：这将删除所有区块链数据，但保留钱包文件
 
 3. **查询交易和余额**
-   
+
    查询所有交易：
+
    ```bash
    curl http://localhost:3001/transactions
    ```
-   
+
    查询特定地址的交易历史：
+
    ```bash
    curl http://localhost:3001/address/cosmos83b4c76c07e632b1fdd401c5b2c724c8e5672048/transactions
    ```
-   
+
    查询地址余额：
+
    ```bash
    curl http://localhost:3001/balance/cosmos83b4c76c07e632b1fdd401c5b2c724c8e5672048
    ```
@@ -504,11 +530,13 @@ npm run query-blockchain
 4. **排除常见问题**
 
    如果遇到数据库错误：
+
    ```
    ModuleError: Database is not open
    ```
-   
+
    解决方法：
+
    ```bash
    # 确保数据目录存在并有正确的权限
    mkdir -p ./data/blockchain
@@ -519,27 +547,11 @@ npm run query-blockchain
 5. **使用不同端口运行多个节点**
 
    当运行多个节点时，记得使用不同的端口和数据目录：
+
    ```bash
    # 第一个节点
    # HTTP端口: 3001, P2P端口: 5001, 数据目录: ./data
-   
+
    # 第二个节点
    # HTTP端口: 3002, P2P端口: 5002, 数据目录: ./data2
    ```
-
-## 常见问题解决
-
-1. **交易未被确认**
-   - 确保矿工正在运行并成功挖矿
-   - 检查发送方余额是否足够
-   - 确认交易参数格式正确
-
-2. **节点同步问题**
-   - 确保节点间的网络连接正常
-   - 检查P2P端口是否正确配置
-   - 重启有问题的节点
-
-3. **挖矿没有奖励**
-   - 确认矿工地址格式正确
-   - 检查区块链数据是否完整
-   - 查看系统日志了解详细错误信息
